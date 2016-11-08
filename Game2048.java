@@ -1,33 +1,16 @@
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import javax.swing.JFrame;
 import java.util.ArrayList;
 import java.util.Random;
+public class Game2048 implements Constants{
 
-public class Game2048 extends JFrame implements KeyListener{
+    private static Gui gui;
+    private static Space[][] board;
+    private static int rows;
+    private static int cols;
+    private static int points;
 
-    JFrame frame;
-    public static Space[][] board;
-    public static int rows;
-    public static int cols;
-    public static int points;
-
-    // Used with the shift/swipe(int direction) method (user swipes in a direction)
-    public static final int LEFT = 1;
-    public static final int RIGHT = 2;
-    public static final int UP = 3;
-    public static final int DOWN = 4;
-
-    public Game2048(int r, int c){
-        // Initializing frame
-        frame = new JFrame("Bitshift");
-        frame.setVisible(true);
-        frame.setResizable(false);
-        frame.setSize(600, 600);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.addKeyListener(this);
-
+    private Game2048(int r, int c){
         // Initializing game board and variables
+        gui = new Gui(TITLE);
         board = new Space[r][c];
         rows = r;
         cols = c;
@@ -44,12 +27,11 @@ public class Game2048 extends JFrame implements KeyListener{
 
     public static void main(String[] args){
         Game2048 game = new Game2048(4, 4);
-
         dispBoard();
         for(;;){}
     }
 
-    public static void generateNumber(){
+    private static void generateNumber(){
         ArrayList<Integer[]>unfilled = new ArrayList<>();
         for(int r=0; r<rows; r++){
             for(int c=0; c<cols; c++){
@@ -58,9 +40,7 @@ public class Game2048 extends JFrame implements KeyListener{
                 }
             }
         }
-
         if(unfilled.size() == 0){lose();}
-
         Random r = new Random();
         int randomIndex = r.nextInt(unfilled.size());
         int randomTwoFour = r.nextInt(1);
@@ -69,11 +49,11 @@ public class Game2048 extends JFrame implements KeyListener{
         board[unfilled.get(randomIndex)[0]][unfilled.get(randomIndex)[1]].setValue((randomTwoFour == 0)?2:4);
     }
 
-    public static void lose(){
+    private static void lose(){
         System.exit(0);
     }
 
-    public static void dispBoard(){
+    static void dispBoard(){
         for(int row=0; row<rows; row++){
             for(int col=0; col<cols; col++){
                 System.out.print(board[row][col]+" ");
@@ -83,7 +63,7 @@ public class Game2048 extends JFrame implements KeyListener{
         System.out.print("\n");
     }
 
-    public static void swipe(int direction){
+    static void swipe(int direction){
         switch(direction){
             case LEFT:
                 shift(LEFT);
@@ -136,13 +116,13 @@ public class Game2048 extends JFrame implements KeyListener{
         generateNumber();
     }
 
-    public static void shift(int direction){
+    private static void shift(int direction){
         switch(direction){
             case LEFT:
                 // For every row on the board...
                 for(int r=0; r<rows; r++){
                     // Keep a record of indices of filled (non-zero value) spaces
-                    ArrayList<Integer>filled = new ArrayList<Integer>();
+                    ArrayList<Integer>filled = new ArrayList<>();
                     for(int c=0; c<cols; c++){
                         Space currentSpace = board[r][c];
                         // If the current space isn't filled, save its column index
@@ -159,7 +139,7 @@ public class Game2048 extends JFrame implements KeyListener{
                 break;
             case RIGHT:
                 for(int r=0; r<rows; r++){
-                    ArrayList<Integer>filled = new ArrayList<Integer>();
+                    ArrayList<Integer>filled = new ArrayList<>();
                     for(int c=0; c<cols; c++){
                         if(board[r][c].getValue() != 0){
                             filled.add(c);
@@ -179,7 +159,7 @@ public class Game2048 extends JFrame implements KeyListener{
                 break;
             case UP:
                 for(int c=0; c<cols; c++){
-                    ArrayList<Integer>filled = new ArrayList<Integer>();
+                    ArrayList<Integer>filled = new ArrayList<>();
                     for(int r=0; r<rows; r++){
                         if(board[r][c].getValue() != 0) filled.add(r);
                     }
@@ -191,7 +171,7 @@ public class Game2048 extends JFrame implements KeyListener{
                 break;
             case DOWN:
                 for(int c=0; c<cols; c++){
-                    ArrayList<Integer>filled = new ArrayList<Integer>();
+                    ArrayList<Integer>filled = new ArrayList<>();
                     for(int r=0; r<rows; r++){
                         if(board[r][c].getValue() != 0) filled.add(r);
                     }
@@ -210,26 +190,4 @@ public class Game2048 extends JFrame implements KeyListener{
                 break;
         }
     }
-
-    public void keyPressed(KeyEvent e){
-        switch(e.getKeyCode()){
-            case KeyEvent.VK_LEFT:
-                swipe(LEFT);
-                break;
-            case KeyEvent.VK_RIGHT:
-                swipe(RIGHT);
-                break;
-            case KeyEvent.VK_UP:
-                swipe(UP);
-                break;
-            case KeyEvent.VK_DOWN:
-                swipe(DOWN);
-                break;
-        }
-        dispBoard();
-    }
-
-    public void keyTyped(KeyEvent e){}
-
-    public void keyReleased(KeyEvent e){}
 }
