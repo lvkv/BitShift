@@ -1,14 +1,8 @@
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Main extends Application implements Constants{
+public class Main implements Constants{
 
     private static Space[][] board;
     private static int rows;
@@ -16,23 +10,17 @@ public class Main extends Application implements Constants{
     private static int points;
 
     public static void main(String[] args){
-        // Launch the launcher (ha)
-        launch(args);
-        // Set up the game using user info from launcher
-        init(4, 4);
-        // We want to make a new window, not restart the app...
-        //Application.launch(Gui.class, args);
+        Application.launch(Gui.class, args);
 
         // Debug stuff
         dispBoard();
-        for(;;){}
+        //for(;;){}
     }
 
-    public static void init(int r, int c){
+    // Only called when user fills launcher form
+    public static void init(){
         // Initializing game board and variables
-        board = new Space[r][c];
-        rows = r;
-        cols = c;
+        board = new Space[rows][cols];
         points = 0;
 
         // Initializing spaces on board
@@ -42,28 +30,6 @@ public class Main extends Application implements Constants{
             }
         }
         generateNumber();
-    }
-
-    @Override
-    public void start(Stage primaryStage){
-        primaryStage.setTitle(TITLE+" Launcher");
-        StackPane root = new StackPane();
-
-        // Launch button + implementation
-        // Sticking with anonymous b/c don't want to learn lambdas right now
-        Button btn_launch = new Button();
-        btn_launch.setText("Launch");
-        btn_launch.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Launched the game");
-            }
-        });
-
-        root.getChildren().add(btn_launch);
-        primaryStage.setScene(new Scene(root, 300, 300));
-        primaryStage.show();
     }
 
     private static void generateNumber(){
@@ -224,5 +190,13 @@ public class Main extends Application implements Constants{
                 // Throw an error
                 break;
         }
+    }
+
+    public static void setRows(int r){
+        rows = r;
+    }
+
+    public static void setCols(int c){
+        cols = c;
     }
 }
