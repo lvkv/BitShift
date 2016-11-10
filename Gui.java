@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -18,6 +19,7 @@ import javafx.scene.text.Font;
 public class Gui extends Application implements Constants{
 
     public Stage primaryStage;
+    public static Tile[][] tileBoard;
 
     public Gui(){}
 
@@ -79,9 +81,52 @@ public class Gui extends Application implements Constants{
 
     public void setGameGui(){
         GridPane grid = new GridPane();
+        Scene scene = new Scene(grid, DIMENSIONS[0], DIMENSIONS[1]);
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                // These cases are KeyCodes, not from Constants interface
+                switch(event.getCode()){
+                    case UP:
+                        Main.swipe(Constants.UP);
+                        break;
+                    case DOWN:
+                        Main.swipe(Constants.DOWN);
+                        break;
+                    case LEFT:
+                        Main.swipe(Constants.LEFT);
+                        break;
+                    case RIGHT:
+                        Main.swipe(Constants.RIGHT);
+                        break;
+                }
+                refreshGui();
+            }
+        });
 
-        //for()
-        primaryStage.setScene(new Scene(grid, DIMENSIONS[0], DIMENSIONS[1]));
+        grid.setAlignment(Pos.CENTER);
+        tileBoard = new Tile[Main.getRows()][Main.getCols()];
+
+        for(int row=0; row<Main.getRows(); row++){
+            for(int col=0; col<Main.getCols(); col++){
+                Tile tile = new Tile(Integer.toString(Main.getSpace(row, col).getValue()));
+                //tile.setTranslateX(col * 100);
+                //tile.setTranslateY(row * 100);
+                tileBoard[row][col] = tile;
+                grid.add(tile, col, row);
+            }
+        }
+
+        primaryStage.setScene(scene);
         primaryStage.show();
+    }
+
+    public static void refreshGui(){
+        for(int row=0; row<Main.getRows(); row++){
+            for(int col=0; col<Main.getCols(); col++){
+                tileBoard[row][col].setNewText(Integer.toString(Main.getSpace(row, col).getValue()));
+                //tileBoard[row][col] = new Tile(Integer.toString(Main.getSpace(row, col).getValue()));
+            }
+        }
     }
 }
