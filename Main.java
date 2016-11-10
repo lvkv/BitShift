@@ -1,16 +1,35 @@
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Random;
-public class Game2048 implements Constants{
 
-    private static Gui gui;
+public class Main extends Application implements Constants{
+
     private static Space[][] board;
     private static int rows;
     private static int cols;
     private static int points;
 
-    private Game2048(int r, int c){
+    public static void main(String[] args){
+        // Launch the launcher (ha)
+        launch(args);
+        // Set up the game using user info from launcher
+        init(4, 4);
+        // We want to make a new window, not restart the app...
+        //Application.launch(Gui.class, args);
+
+        // Debug stuff
+        dispBoard();
+        for(;;){}
+    }
+
+    public static void init(int r, int c){
         // Initializing game board and variables
-        gui = new Gui(TITLE);
         board = new Space[r][c];
         rows = r;
         cols = c;
@@ -25,10 +44,26 @@ public class Game2048 implements Constants{
         generateNumber();
     }
 
-    public static void main(String[] args){
-        Game2048 game = new Game2048(4, 4);
-        dispBoard();
-        for(;;){}
+    @Override
+    public void start(Stage primaryStage){
+        primaryStage.setTitle(TITLE+" Launcher");
+        StackPane root = new StackPane();
+
+        // Launch button + implementation
+        // Sticking with anonymous b/c don't want to learn lambdas right now
+        Button btn_launch = new Button();
+        btn_launch.setText("Launch");
+        btn_launch.setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Launched the game");
+            }
+        });
+
+        root.getChildren().add(btn_launch);
+        primaryStage.setScene(new Scene(root, 300, 300));
+        primaryStage.show();
     }
 
     private static void generateNumber(){
