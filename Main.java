@@ -196,7 +196,13 @@ public class Main implements Constants{
         rows = r;
     }
 
+    public static int getRows(){return rows;}
+
     public static void setCols(int c){
         cols = c;
     }
+
+    public static int getCols(){return cols;}
+
+    public static Space getSpace(int r, int c){return board[r][c];}
 }
