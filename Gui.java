@@ -11,6 +11,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -19,7 +20,11 @@ import javafx.scene.text.Font;
 public class Gui extends Application implements Constants{
 
     public Stage primaryStage;
+    public static Text score;
+    public static Text score_text;
+    public static Text lose_text;
     public static Tile[][] tileBoard;
+    public static boolean gameInPlay = false;
 
     public Gui(){}
 
@@ -80,40 +85,53 @@ public class Gui extends Application implements Constants{
     }
 
     public void setGameGui(){
+        gameInPlay = true;
+        primaryStage.setTitle(TITLE);
         GridPane grid = new GridPane();
         Scene scene = new Scene(grid, DIMENSIONS[0], DIMENSIONS[1]);
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
                 // These cases are KeyCodes, not from Constants interface
-                switch(event.getCode()){
-                    case UP:
-                        Main.swipe(Constants.UP);
-                        break;
-                    case DOWN:
-                        Main.swipe(Constants.DOWN);
-                        break;
-                    case LEFT:
-                        Main.swipe(Constants.LEFT);
-                        break;
-                    case RIGHT:
-                        Main.swipe(Constants.RIGHT);
-                        break;
+                if(gameInPlay){
+                    switch (event.getCode()) {
+                        case UP:
+                            Main.swipe(Constants.UP);
+                            break;
+                        case DOWN:
+                            Main.swipe(Constants.DOWN);
+                            break;
+                        case LEFT:
+                            Main.swipe(Constants.LEFT);
+                            break;
+                        case RIGHT:
+                            Main.swipe(Constants.RIGHT);
+                            break;
+                    }
                 }
                 refreshGui();
             }
         });
 
         grid.setAlignment(Pos.CENTER);
-        tileBoard = new Tile[Main.getRows()][Main.getCols()];
+        score_text = new Text("Score: ");
+        score_text.setFont(Font.font(30));
+        score_text.setFill(Color.BLACK);
+        grid.add(score_text, 0, 0);
 
+        score = new Text("0");
+        score.setFont(Font.font(30));
+        score.setFill(Color.BLACK);
+        grid.add(score, 1, 0);
+
+        tileBoard = new Tile[Main.getRows()][Main.getCols()];
         for(int row=0; row<Main.getRows(); row++){
             for(int col=0; col<Main.getCols(); col++){
                 Tile tile = new Tile(Integer.toString(Main.getSpace(row, col).getValue()));
                 //tile.setTranslateX(col * 100);
                 //tile.setTranslateY(row * 100);
                 tileBoard[row][col] = tile;
-                grid.add(tile, col, row);
+                grid.add(tile, col, row+1);
             }
         }
 
@@ -125,8 +143,14 @@ public class Gui extends Application implements Constants{
         for(int row=0; row<Main.getRows(); row++){
             for(int col=0; col<Main.getCols(); col++){
                 tileBoard[row][col].setNewText(Integer.toString(Main.getSpace(row, col).getValue()));
+                score.setText(Integer.toString(Main.getPoints()));
                 //tileBoard[row][col] = new Tile(Integer.toString(Main.getSpace(row, col).getValue()));
             }
         }
+    }
+
+    public static void lose(){
+        gameInPlay = false;
+
     }
 }
