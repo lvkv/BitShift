@@ -41,7 +41,7 @@ public class Main implements Constants{
                 }
             }
         }
-        if(unfilled.size() == 0){lose();}
+        if(unfilled.size() == 0){Gui.lose();}
         Random r = new Random();
         int randomIndex = r.nextInt(unfilled.size());
         int randomTwoFour = r.nextInt(1);
@@ -72,6 +72,7 @@ public class Main implements Constants{
                     for(int c=0; c<cols-1; c++){
                         if(board[r][c].equals(board[r][c+1])){
                             board[r][c].add(board[r][c+1]);
+                            points+=board[r][c].getValue();
                             shift(LEFT);
                         }
                     }
@@ -83,6 +84,7 @@ public class Main implements Constants{
                     for(int c=cols-1; c>0; c--){
                         if(board[r][c].equals(board[r][c-1])){
                             board[r][c].add(board[r][c-1]);
+                            points+=board[r][c].getValue();
                             shift(RIGHT);
                         }
                     }
@@ -94,6 +96,7 @@ public class Main implements Constants{
                     for(int r=0; r<rows-1; r++){
                         if(board[r][c].equals(board[r+1][c])){
                             board[r][c].add(board[r+1][c]);
+                            points+=board[r][c].getValue();
                             shift(UP);
                         }
                     }
@@ -105,6 +108,7 @@ public class Main implements Constants{
                     for(int r=rows-1; r>0; r--){
                         if(board[r][c].equals(board[r-1][c])){
                             board[r][c].add(board[r-1][c]);
+                            points+=board[r][c].getValue();
                             shift(DOWN);
                         }
                     }
@@ -205,4 +209,6 @@ public class Main implements Constants{
     public static int getCols(){return cols;}
 
     public static Space getSpace(int r, int c){return board[r][c];}
+
+    public static int getPoints(){return points;}
 }
