@@ -22,6 +22,8 @@ public class Gui extends Application implements Constants{
     public Stage primaryStage;
     public static Text score;
     public static Text score_text;
+    public static Text bestScore;
+    public static Text bestScore_text;
     public static Text lose_text;
     public static Tile[][] tileBoard;
     public static boolean gameInPlay = false;
@@ -118,18 +120,25 @@ public class Gui extends Application implements Constants{
         score_text.setFont(Font.font(30));
         score_text.setFill(Color.BLACK);
         grid.add(score_text, 0, 0);
-
         score = new Text("0");
         score.setFont(Font.font(30));
         score.setFill(Color.BLACK);
         grid.add(score, 1, 0);
 
+        bestScore_text = new Text("High: ");
+        bestScore_text.setFont(Font.font(30));
+        bestScore_text.setFill(Color.BLACK);
+        grid.add(bestScore_text, 2, 0);
+        bestScore = new Text("0");
+        bestScore.setFont(Font.font(30));
+        bestScore.setFill(Color.BLACK);
+        grid.add(bestScore, 3, 0);
+
+
         tileBoard = new Tile[Main.getRows()][Main.getCols()];
         for(int row=0; row<Main.getRows(); row++){
             for(int col=0; col<Main.getCols(); col++){
                 Tile tile = new Tile(Integer.toString(Main.getSpace(row, col).getValue()));
-                //tile.setTranslateX(col * 100);
-                //tile.setTranslateY(row * 100);
                 tileBoard[row][col] = tile;
                 grid.add(tile, col, row+1);
             }
@@ -143,14 +152,13 @@ public class Gui extends Application implements Constants{
         for(int row=0; row<Main.getRows(); row++){
             for(int col=0; col<Main.getCols(); col++){
                 tileBoard[row][col].setNewText(Integer.toString(Main.getSpace(row, col).getValue()));
-                score.setText(Integer.toString(Main.getPoints()));
-                //tileBoard[row][col] = new Tile(Integer.toString(Main.getSpace(row, col).getValue()));
             }
         }
+        score.setText(Integer.toString(Main.getPoints()));
+        bestScore.setText(Integer.toString(Main.getBestPoints()));
     }
 
     public static void lose(){
-        gameInPlay = false;
 
     }
 }
