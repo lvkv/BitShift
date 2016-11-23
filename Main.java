@@ -8,13 +8,11 @@ public class Main implements Constants{
     private static int rows;
     private static int cols;
     private static int points;
+    private static int bestPoints = 0;
 
     public static void main(String[] args){
         Application.launch(Gui.class, args);
-
-        // Debug stuff
-        dispBoard();
-        //for(;;){}
+        //dispBoard();
     }
 
     // Only called when user fills launcher form
@@ -32,7 +30,7 @@ public class Main implements Constants{
         generateNumber();
     }
 
-    private static void generateNumber(){
+    public static void generateNumber(){
         ArrayList<Integer[]>unfilled = new ArrayList<>();
         for(int r=0; r<rows; r++){
             for(int c=0; c<cols; c++){
@@ -41,84 +39,98 @@ public class Main implements Constants{
                 }
             }
         }
-        if(unfilled.size() == 0){Gui.lose();}
-        Random r = new Random();
-        int randomIndex = r.nextInt(unfilled.size());
-        int randomTwoFour = r.nextInt(1);
+        if(unfilled.size() == 0){lose();}
+        else {
+            Random r = new Random();
+            int randomIndex = r.nextInt(unfilled.size());
+            int randomTwoFour = r.nextInt(1);
 
-        // If randomTwoFour == 0, set random unfilled space equal to 2, else set it equal to 4
-        board[unfilled.get(randomIndex)[0]][unfilled.get(randomIndex)[1]].setValue((randomTwoFour == 0)?2:4);
+            // If randomTwoFour == 0, set random unfilled space equal to 2, else set it equal to 4
+            board[unfilled.get(randomIndex)[0]][unfilled.get(randomIndex)[1]].setValue((randomTwoFour == 0) ? 2 : 4);
+        }
     }
 
     private static void lose(){
-        System.exit(0);
+        Gui.lose();
+        init();
     }
 
-    static void dispBoard(){
-        for(int row=0; row<rows; row++){
-            for(int col=0; col<cols; col++){
-                System.out.print(board[row][col]+" ");
-            }
-            System.out.print("\n");
+    private static void updatePoints(int pts){
+        points +=pts;
+        if(points > bestPoints){
+            bestPoints = points;
         }
-        System.out.print("\n");
     }
 
-    static void swipe(int direction){
+    // Can be condensed, but readability would suffer
+    public static void swipe(int direction){
+        Space[][]boardBefore = new Space[rows][cols];
+        for(int i=0; i<board.length; i++){
+            for(int j=0; j<board[0].length; j++){
+                boardBefore[i][j] = new Space(board[i][j].getValue());
+            }
+        }
+
+        shift(direction);
         switch(direction){
             case LEFT:
-                shift(LEFT);
                 for(int r=0; r<rows; r++){
                     for(int c=0; c<cols-1; c++){
                         if(board[r][c].equals(board[r][c+1])){
                             board[r][c].add(board[r][c+1]);
-                            points+=board[r][c].getValue();
-                            shift(LEFT);
+                            updatePoints(board[r][c].getValue());
                         }
                     }
                 }
                 break;
             case RIGHT:
-                shift(RIGHT);
                 for(int r=0; r<rows; r++){
                     for(int c=cols-1; c>0; c--){
                         if(board[r][c].equals(board[r][c-1])){
                             board[r][c].add(board[r][c-1]);
-                            points+=board[r][c].getValue();
-                            shift(RIGHT);
+                            updatePoints(board[r][c].getValue());
                         }
                     }
                 }
                 break;
             case UP:
-                shift(UP);
                 for(int c=0; c<cols; c++){
                     for(int r=0; r<rows-1; r++){
                         if(board[r][c].equals(board[r+1][c])){
                             board[r][c].add(board[r+1][c]);
-                            points+=board[r][c].getValue();
-                            shift(UP);
+                            updatePoints(board[r][c].getValue());
                         }
                     }
                 }
                 break;
             case DOWN:
-                shift(DOWN);
                 for(int c=0; c<cols; c++){
                     for(int r=rows-1; r>0; r--){
                         if(board[r][c].equals(board[r-1][c])){
                             board[r][c].add(board[r-1][c]);
-                            points+=board[r][c].getValue();
-                            shift(DOWN);
+                            updatePoints(board[r][c].getValue());
                         }
                     }
                 }
                 break;
             default:
-                // Throw an error
                 break;
         }
-        generateNumber();
+        if(!boardEquals(boardBefore, board)){
+            generateNumber();
+        }
+        shift(direction);
+    }
+
+    public static boolean boardEquals(Space[][] oldBoard, Space[][] newBoard){
+        for(int i=0; i<rows; i++){
+            for(int j=0; j<cols; j++){
+                if(oldBoard[i][j].getValue() != newBoard[i][j].getValue()){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private static void shift(int direction){
@@ -191,7 +203,6 @@ public class Main implements Constants{
                 }
                 break;
             default:
-                // Throw an error
                 break;
         }
     }
@@ -211,4 +222,6 @@ public class Main implements Constants{
     public static Space getSpace(int r, int c){return board[r][c];}
 
     public static int getPoints(){return points;}
+
+    public static int getBestPoints(){return bestPoints;}
 }
