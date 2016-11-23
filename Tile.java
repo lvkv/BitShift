@@ -1,4 +1,3 @@
-import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
@@ -19,7 +18,6 @@ public class Tile extends GridPane{
         text.setFont(Font.font(72));
         text.setFill(Color.GRAY);
 
-        //setAlignment(Pos.CENTER);
         getChildren().addAll(border, text);
     }
 
@@ -33,6 +31,7 @@ public class Tile extends GridPane{
             int intValue = Integer.parseInt(newValue);
 
             switch(intValue){
+                // TODO: Better color transitions
                 case 2:
                     border.setFill(Color.BISQUE);
                     text.setFill(Color.GRAY);
@@ -88,13 +87,21 @@ public class Tile extends GridPane{
                     text.setFill(Color.WHITE);
                     text.setFont(Font.font(45));
                     break;
+                case 4096:
+                    border.setFill(Color.INDIANRED);
+                    text.setFill(Color.WHITE);
+                    text.setFont(Font.font(45));
+                    break;
+                case 16384:
+                    border.setFill(Color.INDIANRED);
+                    text.setFill(Color.WHITE);
+                    text.setFont(Font.font(30));
                 default:
-                    border.setFill(Color.BISQUE);
-                    text.setFill(Color.GRAY);
-                    text.setFont(Font.font(72));
+                    border.setFill(Color.DARKBLUE);
+                    text.setFill(Color.WHITE);
+                    text.setFont(Font.font(45));
                     break;
             }
-
         }
     }
 }
