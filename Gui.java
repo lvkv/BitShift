@@ -69,16 +69,13 @@ public class Gui extends Application implements Constants{
 
         Button btn = new Button();
         btn.setText("Launch");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Launching App...");
-                Main.setRows((int)row_options.getSelectionModel().getSelectedItem());
-                Main.setCols((int)col_options.getSelectionModel().getSelectedItem());
-                primaryStage.hide();
-                Main.init();
-                setGameGui();
-            }
+        btn.setOnAction(event -> {
+            System.out.println("Launching App...");
+            Main.setRows((int)row_options.getSelectionModel().getSelectedItem());
+            Main.setCols((int)col_options.getSelectionModel().getSelectedItem());
+            primaryStage.hide();
+            Main.init();
+            setGameGui();
         });
         grid.add(btn, 0, 3);
 
@@ -91,28 +88,25 @@ public class Gui extends Application implements Constants{
         primaryStage.setTitle(TITLE);
         GridPane grid = new GridPane();
         Scene scene = new Scene(grid, DIMENSIONS[0], DIMENSIONS[1]);
-        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                // These cases are KeyCodes, not from Constants interface
-                if(gameInPlay){
-                    switch (event.getCode()) {
-                        case UP:
-                            Main.swipe(Constants.UP);
-                            break;
-                        case DOWN:
-                            Main.swipe(Constants.DOWN);
-                            break;
-                        case LEFT:
-                            Main.swipe(Constants.LEFT);
-                            break;
-                        case RIGHT:
-                            Main.swipe(Constants.RIGHT);
-                            break;
-                    }
+        scene.setOnKeyPressed(event -> {
+            // These cases are KeyCodes, not from Constants interface
+            if(gameInPlay){
+                switch (event.getCode()) {
+                    case UP:
+                        Main.swipe(Constants.UP);
+                        break;
+                    case DOWN:
+                        Main.swipe(Constants.DOWN);
+                        break;
+                    case LEFT:
+                        Main.swipe(Constants.LEFT);
+                        break;
+                    case RIGHT:
+                        Main.swipe(Constants.RIGHT);
+                        break;
                 }
-                refreshGui();
             }
+            refreshGui();
         });
 
         grid.setAlignment(Pos.CENTER);
