@@ -9,6 +9,7 @@ public class Main implements Constants{
     private static int cols;
     private static int points;
     private static int bestPoints = 0;
+    private static int bitshifts = 3;
 
     public static void main(String[] args){
         Application.launch(Gui.class, args);
@@ -28,6 +29,21 @@ public class Main implements Constants{
             }
         }
         generateNumber();
+    }
+
+    public static boolean justLost(){
+        ArrayList<Integer[]>unfilled = new ArrayList<>();
+        for(int r=0; r<rows; r++){
+            for(int c=0; c<cols; c++){
+                if(board[r][c].getValue() == 0){
+                    unfilled.add(new Integer[]{r,c});
+                }
+            }
+        }
+        if(unfilled.size() == 0){
+            return true;
+        }
+        return false;
     }
 
     public static void generateNumber(){
@@ -52,7 +68,7 @@ public class Main implements Constants{
 
     private static void lose(){
         Gui.lose();
-        init();
+        //init();
     }
 
     private static void updatePoints(int pts){
@@ -119,6 +135,10 @@ public class Main implements Constants{
         if(!boardEquals(boardBefore, board)){
             generateNumber();
         }
+        else if(justLost()){
+            lose();
+        }
+
         shift(direction);
     }
 
@@ -207,6 +227,22 @@ public class Main implements Constants{
         }
     }
 
+    public static void bitShift(){
+        int ptsToSubtract = 0;
+        for(int i=0; i<rows; i++){
+            for(int j=0; j<cols-1; j++){
+                if(j == 0){
+                    ptsToSubtract += board[i][j].getValue();
+                }
+                board[i][j] = new Space(board[i][j+1]);
+                board[i][cols-1] = new Space(0);
+            }
+        }
+        points -= ptsToSubtract;
+        generateNumber();
+        bitshifts--;
+    }
+
     public static void setRows(int r){
         rows = r;
     }
@@ -224,4 +260,6 @@ public class Main implements Constants{
     public static int getPoints(){return points;}
 
     public static int getBestPoints(){return bestPoints;}
+
+    public static int getBitshifts(){return bitshifts;}
 }

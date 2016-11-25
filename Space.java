@@ -5,6 +5,9 @@ class Space {
         value = v;
     }
 
+    // I know, this looks bad
+    Space(Space space){ value = space.getValue(); }
+
     // Adds value of otherSpace to current space, sets value of otherSpace to 0
     void add(Space otherSpace){
         this.setValue(this.getValue() + otherSpace.getValue());

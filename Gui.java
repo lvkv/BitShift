@@ -1,15 +1,12 @@
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.FontWeight;
@@ -24,8 +21,9 @@ public class Gui extends Application implements Constants{
     public static Text score_text;
     public static Text bestScore;
     public static Text bestScore_text;
-    public static Text lose_text;
+    public static Text bitShiftsLeft;
     public static Tile[][] tileBoard;
+    public static Button bitShiftButton;
     public static boolean gameInPlay = false;
 
     public Gui(){}
@@ -70,7 +68,6 @@ public class Gui extends Application implements Constants{
         Button btn = new Button();
         btn.setText("Launch");
         btn.setOnAction(event -> {
-            System.out.println("Launching App...");
             Main.setRows((int)row_options.getSelectionModel().getSelectedItem());
             Main.setCols((int)col_options.getSelectionModel().getSelectedItem());
             primaryStage.hide();
@@ -138,6 +135,31 @@ public class Gui extends Application implements Constants{
             }
         }
 
+        Button restartButton = new Button();
+        restartButton.setText("  Restart Game  ");
+        restartButton.setOnAction(event -> {
+            Main.init();
+            refreshGui();
+        });
+        grid.add(restartButton, 0, Main.getRows()+1);
+
+        bitShiftButton = new Button();
+        bitShiftButton.setText("\tBitShift\t ");
+        bitShiftButton.setOnAction(event -> {
+            if(Main.getBitshifts() > 0) {
+                Main.bitShift();
+            }
+            refreshGui();
+        });
+        grid.add(bitShiftButton, 1, Main.getRows()+1);
+
+
+        bitShiftsLeft = new Text("x"+Integer.toString(Main.getBitshifts()));
+        bitShiftsLeft.setFont(Font.font(20));
+        grid.add(bitShiftsLeft, 2, Main.getRows()+1);
+
+
+
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -150,6 +172,10 @@ public class Gui extends Application implements Constants{
         }
         score.setText(Integer.toString(Main.getPoints()));
         bestScore.setText(Integer.toString(Main.getBestPoints()));
+        if(Main.getBitshifts() == 0){
+            bitShiftButton.setDisable(true);
+        }
+        bitShiftsLeft.setText("x"+Integer.toString(Main.getBitshifts()));
     }
 
     public static void lose(){
