@@ -92,9 +92,11 @@ public class Main implements Constants{
             case LEFT:
                 for(int r=0; r<rows; r++){
                     for(int c=0; c<cols-1; c++){
-                        if(board[r][c].equals(board[r][c+1])){
+                        if(board[r][c].equals(board[r][c+1]) && !(board[r][c].getValue()==0)){
+                            System.out.println("THIS TILE IS WORTH "+board[r][c]);
                             board[r][c].add(board[r][c+1]);
                             updatePoints(board[r][c].getValue());
+                            Gui.tileAnimation(Gui.tileBoard[r][c+1], LEFT);
                         }
                     }
                 }
@@ -102,9 +104,11 @@ public class Main implements Constants{
             case RIGHT:
                 for(int r=0; r<rows; r++){
                     for(int c=cols-1; c>0; c--){
-                        if(board[r][c].equals(board[r][c-1])){
+                        if(board[r][c].equals(board[r][c-1]) && !(board[r][c].getValue()==0)){
+                            System.out.println("THIS TILE IS WORTH "+board[r][c]);
                             board[r][c].add(board[r][c-1]);
                             updatePoints(board[r][c].getValue());
+                            Gui.tileAnimation(Gui.tileBoard[r][c-1], RIGHT);
                         }
                     }
                 }
@@ -112,9 +116,11 @@ public class Main implements Constants{
             case UP:
                 for(int c=0; c<cols; c++){
                     for(int r=0; r<rows-1; r++){
-                        if(board[r][c].equals(board[r+1][c])){
+                        if(board[r][c].equals(board[r+1][c]) && !(board[r][c].getValue()==0)){
+                            System.out.println("THIS TILE IS WORTH "+board[r][c]);
                             board[r][c].add(board[r+1][c]);
                             updatePoints(board[r][c].getValue());
+                            Gui.tileAnimation(Gui.tileBoard[r+1][c], UP);
                         }
                     }
                 }
@@ -122,9 +128,11 @@ public class Main implements Constants{
             case DOWN:
                 for(int c=0; c<cols; c++){
                     for(int r=rows-1; r>0; r--){
-                        if(board[r][c].equals(board[r-1][c])){
+                        if(board[r][c].equals(board[r-1][c])&& !(board[r][c].getValue()==0)){
+                            System.out.println("THIS TILE IS WORTH "+board[r][c]);
                             board[r][c].add(board[r-1][c]);
                             updatePoints(board[r][c].getValue());
+                            Gui.tileAnimation(Gui.tileBoard[r-1][c], DOWN);
                         }
                     }
                 }

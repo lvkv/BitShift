@@ -1,8 +1,12 @@
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -13,10 +17,14 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
+
+import static java.lang.Math.random;
 
 public class Gui extends Application implements Constants{
 
     public Stage primaryStage;
+    public static GridPane gridp;
     public static Text score;
     public static Text score_text;
     public static Text bestScore;
@@ -83,8 +91,8 @@ public class Gui extends Application implements Constants{
     public void setGameGui(){
         gameInPlay = true;
         primaryStage.setTitle(TITLE);
-        GridPane grid = new GridPane();
-        Scene scene = new Scene(grid, DIMENSIONS[0], DIMENSIONS[1]);
+        gridp = new GridPane();
+        Scene scene = new Scene(gridp, DIMENSIONS[0], DIMENSIONS[1]);
         scene.setOnKeyPressed(event -> {
             // These cases are KeyCodes, not from Constants interface
             if(gameInPlay){
@@ -106,24 +114,24 @@ public class Gui extends Application implements Constants{
             refreshGui();
         });
 
-        grid.setAlignment(Pos.CENTER);
+        gridp.setAlignment(Pos.CENTER);
         score_text = new Text("Score: ");
         score_text.setFont(Font.font(30));
         score_text.setFill(Color.BLACK);
-        grid.add(score_text, 0, 0);
+        gridp.add(score_text, 0, 0);
         score = new Text("0");
         score.setFont(Font.font(30));
         score.setFill(Color.BLACK);
-        grid.add(score, 1, 0);
+        gridp.add(score, 1, 0);
 
         bestScore_text = new Text("High: ");
         bestScore_text.setFont(Font.font(30));
         bestScore_text.setFill(Color.BLACK);
-        grid.add(bestScore_text, 2, 0);
+        gridp.add(bestScore_text, 2, 0);
         bestScore = new Text("0");
         bestScore.setFont(Font.font(30));
         bestScore.setFill(Color.BLACK);
-        grid.add(bestScore, 3, 0);
+        gridp.add(bestScore, 3, 0);
 
 
         tileBoard = new Tile[Main.getRows()][Main.getCols()];
@@ -131,7 +139,7 @@ public class Gui extends Application implements Constants{
             for(int col=0; col<Main.getCols(); col++){
                 Tile tile = new Tile(Integer.toString(Main.getSpace(row, col).getValue()));
                 tileBoard[row][col] = tile;
-                grid.add(tile, col, row+1);
+                gridp.add(tile, col, row+1);
             }
         }
 
@@ -141,7 +149,7 @@ public class Gui extends Application implements Constants{
             Main.init();
             refreshGui();
         });
-        grid.add(restartButton, 0, Main.getRows()+1);
+        gridp.add(restartButton, 0, Main.getRows()+1);
 
         bitShiftButton = new Button();
         bitShiftButton.setText("\tBitShift\t ");
@@ -151,16 +159,17 @@ public class Gui extends Application implements Constants{
             }
             refreshGui();
         });
-        grid.add(bitShiftButton, 1, Main.getRows()+1);
+        gridp.add(bitShiftButton, 1, Main.getRows()+1);
 
 
         bitShiftsLeft = new Text("x"+Integer.toString(Main.getBitshifts()));
         bitShiftsLeft.setFont(Font.font(20));
-        grid.add(bitShiftsLeft, 2, Main.getRows()+1);
+        gridp.add(bitShiftsLeft, 2, Main.getRows()+1);
 
 
 
         primaryStage.setScene(scene);
+
         primaryStage.show();
     }
 
@@ -176,6 +185,59 @@ public class Gui extends Application implements Constants{
             bitShiftButton.setDisable(true);
         }
         bitShiftsLeft.setText("x"+Integer.toString(Main.getBitshifts()));
+    }
+
+    public static void tileAnimation(Tile movingTile, int direction){
+        Timeline timeline = new Timeline();
+        switch (direction){
+            case LEFT:
+                timeline.getKeyFrames().addAll(
+                        new KeyFrame(Duration.ZERO,
+                                new KeyValue(movingTile.translateXProperty(), 0),
+                                new KeyValue(movingTile.translateYProperty(), 0)
+                        ),
+                        new KeyFrame(new Duration(200),
+                                new KeyValue(movingTile.translateXProperty(), -100),
+                                new KeyValue(movingTile.translateYProperty(), 0))
+                );
+                break;
+            case RIGHT:
+                timeline.getKeyFrames().addAll(
+                        new KeyFrame(Duration.ZERO,
+                                new KeyValue(movingTile.translateXProperty(), 0),
+                                new KeyValue(movingTile.translateYProperty(), 0)
+                        ),
+                        new KeyFrame(new Duration(200),
+                                new KeyValue(movingTile.translateXProperty(), 100),
+                                new KeyValue(movingTile.translateYProperty(), 0))
+                );
+                break;
+            case UP:
+                timeline.getKeyFrames().addAll(
+                        new KeyFrame(Duration.ZERO,
+                                new KeyValue(movingTile.translateXProperty(), 0),
+                                new KeyValue(movingTile.translateYProperty(), 0)
+                        ),
+                        new KeyFrame(new Duration(200),
+                                new KeyValue(movingTile.translateXProperty(), 0),
+                                new KeyValue(movingTile.translateYProperty(), -100))
+                );
+                break;
+            case DOWN:
+                timeline.getKeyFrames().addAll(
+                        new KeyFrame(Duration.ZERO,
+                                new KeyValue(movingTile.translateXProperty(), 0),
+                                new KeyValue(movingTile.translateYProperty(), 0)
+                        ),
+                        new KeyFrame(new Duration(200),
+                                new KeyValue(movingTile.translateXProperty(), 100),
+                                new KeyValue(movingTile.translateYProperty(), 0))
+                );
+                break;
+        }
+
+        // play 40s of animation
+        timeline.play();
     }
 
     public static void lose(){
