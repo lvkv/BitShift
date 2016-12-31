@@ -1,5 +1,5 @@
 # BitShift
-BitShift is a 2048 remake with a couple twists.
+BitShift is a 2048 remake with a couple twists. Just to let you know: it's pretty bad.
 
 #### How to Play:
 * Use arrow keys to shift tiles up, down, left or right
